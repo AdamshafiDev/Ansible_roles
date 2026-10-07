@@ -8,10 +8,11 @@
      ignore_errors: true
 
    - name: user creation
+     become: yes
      ansible.builtin.command:
-      when output.rc !=0  # when its failed
+      when output.rc !=0  
 
    - name: user alredy exist
      ansible.builtin.debug:
-      msg: " user alredy exist"
-      when output.rc !==0  # when user alredy exit  
+      msg: "user alredy exist"
+     when: output.rc== 0    
