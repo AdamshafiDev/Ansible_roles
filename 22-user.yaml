@@ -10,7 +10,7 @@
    - name: user creation
      become: yes
      ansible.builtin.command:
-      when output.rc !=0  
+     when: output.rc !=0  
 
    - name: user alredy exist
      ansible.builtin.debug:
