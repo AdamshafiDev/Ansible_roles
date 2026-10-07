@@ -1,0 +1,75 @@
+- name: configartion cart server
+  hosts: cart
+  become: yes
+  tasks:
+   - name: disbale old version
+     ansible.builtin.command: dnf module disable nodejs -y
+     ansible.builtin.command: dnf module enable nodejs:20 -y
+     
+   - name: install nodejs
+     ansible.builtin.dnf:
+      name: nodejs 
+      state: present
+   - name: create roboshop user
+     ansible.builtin.user:
+       name: roboshop
+       shell: /sbin/nologin
+       system: true
+       home: /app
+
+   - name: create directory
+     ansible.builtin.file:
+       path: /app
+       state: directory
+
+   - name: download the catalog
+     ansible.builtin.get_url:
+       url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
+       dest: /tmp/catalogue.zip
+   - name: unarchive the zip file
+     ansible.builtin.unarchive:
+       src: tmp/catalogue.zip
+       dest: /app
+       remote_src: yes
+   - name: depencides nps
+     community.general.npm:
+      path: /app
+
+   - name: copy the sysymd sercices
+     ansible.builtin.copy:
+      src: Catalogue Service
+      dest: /etc/systemd/system/catalogue.service
+
+   - name: demano reload
+     ansible.builtin.systemd_service:
+     daemon_reload: true  
+
+   - name: start and enable service module
+     ansible.builtin.service:
+      name: catalogue
+      state: stated
+      enable: yes
+
+   - name: copy the mongodb reop
+     ansible.builtin.copy:
+       sec: mongo.reop
+       dest: /etc/yum.repos.d/mongo.repo
+
+   - name: install mongodb client
+     ansible.builtin.dnf:
+      name: mongodb-mongosh
+      state: installed
+
+   - name: load the data
+     ansible.builtin.command: mongosh --host mongodb.daws84s.site --eval 'db.getMongo().getDBNames().indexOf("catalogue")'
+     register: catalogue_output
+
+   - name: print the catalogue_output
+     ansible.builtin.debug:
+      msg: "{{catalogue_output}}" 
+
+   - name: load the products
+     ansible.builtin.shell: mongosh --host MONGODB-SERVER-IPADDRESS </app/db/master-data.js  
+     when: catalogue_output.stdout | int < 0
+
+

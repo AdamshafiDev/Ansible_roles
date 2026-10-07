@@ -1,0 +1,24 @@
+- name: create roboshop user
+  ansible.builtin.user:
+       name: roboshop
+       shell: /sbin/nologin
+       system: true
+       home: /app
+
+- name: create directory
+  ansible.builtin.file:
+       path: /app
+       state: directory
+
+- name: download the catalog
+  ansible.builtin.get_url:
+       url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
+       dest: /tmp/catalogue.zip
+- name: unarchive the zip file
+  ansible.builtin.unarchive:
+       src: tmp/catalogue.zip
+       dest: /app
+       remote_src: yes
+- name: depencides nps
+  community.general.npm:
+      path: /app

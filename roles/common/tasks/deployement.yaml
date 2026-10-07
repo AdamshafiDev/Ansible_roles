@@ -1,0 +1,27 @@
+- name: stop the serrvices
+  ansible.builtin.services:
+    name: "{{ component }}"
+    state: stopped
+
+
+- name: remove old version
+  ansible.builtin.file:
+    state: absent
+    path: /app
+
+
+- name: Extract local archive to remote host
+  ansible.builtin.unarchive:
+   src: https://roboshop-artifacts.s3.amazonaws.com/{{ component }}-v{{ app_version }}.zip 
+   dest: /app
+   remove_src: yes 
+
+- name: install dependcy
+  community.general.npm:
+    path: /app  
+    
+
+- name: restart the {{ component }}
+  ansible.builtin.service:
+    name: "{{ component }}"
+    state: restarted

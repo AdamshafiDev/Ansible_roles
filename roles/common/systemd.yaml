@@ -1,0 +1,14 @@
+- name: copy the sysymd sercices
+  ansible.builtin.template:
+      src: Catalogue.Service.j2
+      dest: /etc/systemd/system/catalogue.service
+
+- name: demano reload
+  ansible.builtin.systemd_service:
+   daemon_reload: true  
+
+- name: start and enable service module
+  ansible.builtin.service:
+      name: catalogue
+      state: stated
+      enable: yes

@@ -1,0 +1,17 @@
+- name: user creation
+  hosts: local
+  connection: local
+  tasks:
+   - name: check user exit or not
+     ansible.builtin.command: id roboshop
+     register: output
+     ignore_errors: true
+
+   - name: user creation
+     ansible.builtin.command:
+      when output.rc !=0  # when its failed
+
+   - name: user alredy exist
+     ansible.builtin.debug:
+      msg: " user alredy exist"
+      when output.rc !==0  # when user alredy exit  
