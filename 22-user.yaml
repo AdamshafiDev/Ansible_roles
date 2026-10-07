@@ -9,7 +9,7 @@
 
    - name: user creation
      become: yes
-     ansible.builtin.command:
+     ansible.builtin.command: useradd roboshop
      when: output.rc !=0  
 
    - name: user alredy exist
