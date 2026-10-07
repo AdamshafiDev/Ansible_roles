@@ -1,10 +1,14 @@
 plugin: amazon.aws.aws_ec2
+
 regions:
   - us-east-1
+
 filters:
-  tag:name: front
+  tag:Name: front
   instance-state-name: running
+
 hostnames:
-  - ip_address
+  - ip-address
+
 compose:
-  ansible_host: private_ip_address
+  ansible_host: public_ip_address
