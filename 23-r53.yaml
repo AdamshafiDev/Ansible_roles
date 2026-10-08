@@ -4,8 +4,8 @@
   vars:
    instances:
     - mysql
-    - nodejs
-    - mongodbbbb
+    - frontend
+    - mongodb
     - reddis
    subnet_id: subnet-0e8b1a71514f2db01
    sg_id: sg-01e0445cb21079912 
