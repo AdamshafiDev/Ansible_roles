@@ -21,10 +21,10 @@
         tags:
          name: "{{ item }}"
       loop: "{{ instances }}"   
-      #register: ec2_output
-    # - name: print e2 output
-    #   ansible.builtin.debug:
-    #    msg: "{{ ec2_output }}"  
+      register: ec2_output
+    - name: print e2 output
+      ansible.builtin.debug:
+       msg: "{{ ec2_output }}"  
       
     # - name: cerate route53 records
     #   amazon.aws.route53:
